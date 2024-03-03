@@ -8,7 +8,7 @@ Todo is a command-line and acme client for a to-do task tracking system.
 	usage: todo [-a] [-e] [-d subdir] [-done] <query>
 
 Todo runs the query and prints the maching tasks, one per line.
-If the query is a single task number, as in ``todo 1'', todo prints
+If the query is a single task number, as in “todo 1”, todo prints
 the full history of the task.
 
 The -a flag opens the task or query in an acme window.
@@ -16,7 +16,6 @@ The -e flag opens the task or query in the system editor.
 
 The exact acme/editor integration remains undocumented
 but is similar to acme mail or to rsc.io/github/issue.
-
 */
 package main
 

@@ -10,7 +10,9 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -74,6 +76,21 @@ func (w *awin) dir() string {
 // It always ends in a slash.
 func adir(l *task.List) string {
 	return strings.TrimSuffix(path.Join(root, l.Name()), "/") + "/"
+}
+
+// subt returns the count of tasks in the given path.  This is used to count the number of tasks
+// in a subdirectory of "/todo/".  It returns -1 if the subdirectory couldn't be opened.
+func subt(path string) (count int) {
+	dirs, err := os.ReadDir(path)
+	if err != nil {
+		return -1
+	}
+	for _, entry := range dirs {
+		if strings.HasSuffix(entry.Name(), ".todo") {
+			count += 1
+		}
+	}
+	return count
 }
 
 // list returns the task list for the window.
@@ -207,8 +224,10 @@ func (w *awin) ExecGet() (err error) {
 
 		case "all":
 			var buf bytes.Buffer
+			sub := filepath.Join(os.Getenv("HOME"), adir(w.list()))
 			for _, name := range w.list().Sublists() {
-				fmt.Fprintf(&buf, "%s/\n", name)
+				count := subt(filepath.Join(sub, name))
+				fmt.Fprintf(&buf, "_%d\t%s/\n", count, name)
 			}
 			if buf.Len() > 0 {
 				fmt.Fprintf(&buf, "\n")

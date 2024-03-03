@@ -113,11 +113,11 @@ func (l *List) Read(id string) (*Task, error) {
 
 func (l *List) read(id string) (*Task, error) {
 	// l is locked
-	if t := l.cache[id]; t != nil {
-		return t, nil
-	}
 	if l.cache == nil {
 		l.cache = make(map[string]*Task)
+	}
+	if t := l.cache[id]; t != nil {
+		return t, nil
 	}
 
 	file := filepath.Join(l.dir, id+".todo")
@@ -330,6 +330,9 @@ func (l *List) Create(id string, now time.Time, hdr map[string]string, comment [
 		file: file,
 		id:   id,
 		hdr:  make(map[string]string),
+	}
+	if l.cache == nil {
+		l.cache = make(map[string]*Task)
 	}
 	l.cache[id] = t
 
